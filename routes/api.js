@@ -4,7 +4,7 @@ import express from 'express'
 const router = express.Router()
 
 // Set this to match the model name in your Prisma schema
-const model = 'cats'
+const model = 'outfits'
 
 // Prisma lets NodeJS communicate with MongoDB
 // Let's import and initialize the Prisma client
@@ -30,7 +30,7 @@ router.post('/data', async (req, res) => {
 
 
 // ----- READ (GET) list ----- 
-router.get('/data', async (req, res) => {
+router.get('/outfits', async (req, res) => {
     try {
         // fetch first 100 records from the database with no filter
         const result = await prisma[model].findMany({
