@@ -14,6 +14,127 @@ body {
     background-color: lightgreen
 }
 
+/* New form layout styles */
+.entry-row {
+    display: flex;
+    gap: 1.5rem;
+    width: 100%;
+}
+.image-column {
+    width: 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+}
+.upload-label {
+    cursor: pointer;
+}
+.upload-label input[type=file] {
+    display: none;
+}
+.upload-button {
+    background: #036903;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+}
+.image-preview {
+    width: 200px;
+    height: 200px;
+    border: 1px dashed #aaa;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #fafafa;
+    border-radius: 0.5rem;
+    overflow: hidden;
+}
+.image-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.meta-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+.meta-top {
+    display: flex;
+    gap: 1rem;
+}
+.name-field {
+    flex: 2;
+}
+.date-field {
+    flex: 1;
+}
+.meta-mid {
+    display: flex;
+    gap: 1rem;
+}
+.brands-field {
+    flex: 2;
+}
+.occasion-field {
+    flex: 1;
+}
+.meta-bottom {
+    display: flex;
+    gap: 1rem;
+}
+.rating-field {
+    flex: 0 0 180px;
+}
+.notes-field {
+    flex: 1;
+}
+.tags {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    max-width: 200px;
+}
+.tag {
+    background: #e0f2e9;
+    color: #034d16;
+    padding: 0.25rem 0.5rem;
+    border-radius: 999px;
+    display: inline-flex;
+    gap: 0.4rem;
+    align-items: center;
+    font-weight: 600;
+}
+.tag button { 
+    background: transparent;
+    border: 0;
+    color: #034d16;
+    cursor: pointer;
+}
+.stars { 
+    display: flex;
+    gap: 0.25rem;
+}
+.star {
+    font-size: 1.5rem;
+    background: transparent;
+    border: 0;
+    cursor: pointer;
+}
+.star.active {
+    color: gold;
+    text-shadow: 0 0 4px rgba(0,0,0,0.2);
+}
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
 
 h2 {
     display: flex;
@@ -27,7 +148,7 @@ h2 img {
 }
 
 p {
-    /* font-size: 1.25rem; */
+    font-size: 1.25rem;
 }
 
 nav {

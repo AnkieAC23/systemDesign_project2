@@ -3,64 +3,156 @@ let notReadyStatus = document.querySelector('#notReadyStatus')
 let myForm = document.querySelector('#myForm')
 let contentArea = document.querySelector('#content')
 
-// listen for form submissions  
-myForm.addEventListener('submit', event => {
-    // prevent the page from reloading when the form is submitted.
-    event.preventDefault();
-    // if the user clicked "reset", reset the form
-    if (event.submitter.className == "reset") {
-        myForm.reset()
-    }
-    // otherwise assume we need to save the data.
-    else {
+// New form controls
+const imageInput = document.getElementById('image')
+const imagePreview = document.getElementById('imagePreview')
+const brandInput = document.getElementById('brandInput')
+const tagsContainer = document.getElementById('tagsContainer')
+const occasionSelect = document.getElementById('occasionSelect')
+const occasionOther = document.getElementById('occasionOther')
+const starRating = document.getElementById('starRating')
+const saveButton = document.getElementById('saveButton')
 
-        // if textarea.validity is false, alert the user and stop processing.
-        if (!myForm.description.checkValidity()) {
-            alert('Please provide a description of at least 20 characters.')
-            return
+let tags = []
+let imageDataUrl = null
+let rating = 0
+
+// Image preview
+imageInput.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0]
+    if (!file) {
+        imagePreview.textContent = 'No image'
+        imagePreview.innerHTML = 'No image'
+        imageDataUrl = null
+        return
+    }
+    const reader = new FileReader()
+    reader.onload = () => {
+        imageDataUrl = reader.result
+        imagePreview.innerHTML = ''
+        const img = document.createElement('img')
+        img.src = imageDataUrl
+        imagePreview.appendChild(img)
+    }
+    reader.readAsDataURL(file)
+})
+
+// Tags (brands) handling
+function renderTags() {
+    tagsContainer.innerHTML = ''
+    tags.forEach((t, i) => {
+        const span = document.createElement('span')
+        span.className = 'tag'
+        span.textContent = t
+        const btn = document.createElement('button')
+        btn.type = 'button'
+        btn.title = 'Remove tag'
+        btn.textContent = '×'
+        btn.addEventListener('click', () => {
+            tags.splice(i, 1)
+            renderTags()
+        })
+        span.appendChild(btn)
+        tagsContainer.appendChild(span)
+    })
+}
+
+function addTag(value) {
+    const v = value.trim()
+    if (!v) return
+    if (!tags.includes(v)) {
+        tags.push(v)
+        renderTags()
+    }
+}
+
+brandInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault()
+        addTag(brandInput.value)
+        brandInput.value = ''
+    }
+    else if (e.key === ',') {
+        e.preventDefault()
+        addTag(brandInput.value.replace(',', ''))
+        brandInput.value = ''
+    }
+})
+
+brandInput.addEventListener('blur', () => {
+    if (brandInput.value.trim() !== '') {
+        addTag(brandInput.value)
+        brandInput.value = ''
+    }
+})
+
+// Occasion: show 'Other' input when selected
+occasionSelect.addEventListener('change', () => {
+    if (occasionSelect.value === 'Other') {
+        occasionOther.style.display = 'block'
+    } else {
+        occasionOther.style.display = 'none'
+    }
+})
+
+// Star rating
+starRating.addEventListener('click', (e) => {
+    const btn = e.target.closest('.star')
+    if (!btn) return
+    rating = Number(btn.dataset.value)
+    updateStars()
+})
+
+function updateStars() {
+    const starButtons = starRating.querySelectorAll('.star')
+    starButtons.forEach(btn => {
+        const val = Number(btn.dataset.value)
+        if (val <= rating) {
+            btn.classList.add('active')
+            btn.textContent = '★'
+        } else {
+            btn.classList.remove('active')
+            btn.textContent = '☆'
         }
+    })
+}
 
-        // Represent the FormData entries as a JSON object
-        // This gives a baseline representation with all values as strings
-        const formData = new FormData(myForm)
-        const json = Object.fromEntries(formData)
-
-        // Now let's improve the data by handling checkboxes dates, and numbers 
-        // more explicitly to prepare the data for storage  
-        event.target
-            .querySelectorAll('input')
-            .forEach(el => {
-                // Represent checkboxes as a Boolean value (true/false) 
-                // NOTE: By default, unchecked checkboxes are excluded 
-                if (el.type == 'checkbox') {
-                    json[el.name] = el.checked ? true : false
-                }
-                // Represent number and range inputs as actual numbers
-                else if (el.type == 'number' || el.type == 'range') {
-                    if (json[el.name] && json[el.name].trim() !== '') {
-                        json[el.name] = Number(json[el.name])
-                    }
-                    else {
-                        json[el.name] = null
-                    }
-                }
-                // Represent all date inputs in ISO-8601 DateTime format
-                // NOTE: this makes the date compatible for storage 
-                else if (el.type == 'date') {
-                    if (json[el.name] && json[el.name].trim() !== '') {
-                        json[el.name] = new Date(json[el.name]).toISOString()
-                    }
-                    else {
-                        json[el.name] = null
-                    }
-                }
-            })
-
-
-        console.log(json)
-        // pass the json along to be saved.
-        createItem(json)
+// listen for form submissions
+myForm.addEventListener('submit', event => {
+    event.preventDefault()
+    // handle reset button: when user clicked the reset control
+    if (event.submitter && event.submitter.classList.contains('reset')) {
+        tags = []
+        imageDataUrl = null
+        rating = 0
+        renderTags()
+        imagePreview.innerHTML = 'No image'
+        updateStars()
+        myForm.reset()
+        return
     }
+
+    // validation: name required
+    const nameField = myForm.querySelector('#name')
+    if (!nameField.checkValidity()) {
+        alert('Please provide a title/name for the entry.')
+        return
+    }
+
+    // assemble JSON data
+    const data = {}
+    data.name = nameField.value.trim()
+    const dateVal = myForm.querySelector('#date').value
+    data.date = dateVal ? new Date(dateVal).toISOString() : null
+    data.brands = tags.slice()
+    const occ = occasionSelect.value
+    data.occasion = (occ === 'Other') ? (occasionOther.value.trim() || null) : (occ || null)
+    data.rating = rating
+    data.notes = myForm.querySelector('#notes').value.trim() || null
+    data.image = imageDataUrl // data URL or null
+
+    console.log('Submitting entry:', data)
+    createItem(data)
 })
 
 
