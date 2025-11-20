@@ -54,7 +54,7 @@ body {
 .image-preview img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 .meta-column {
     flex: 1;
@@ -92,11 +92,29 @@ body {
 .notes-field {
     flex: 1;
 }
+
+/* Disable textarea resizing for personal notes */
+#notes {
+    resize: none;
+}
 .tags {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
     max-width: 200px;
+}
+
+.tag-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+}
+.occasion-tags {
+    order: 0;
+}
+.brand-tags {
+    order: 1;
 }
 .tag {
     background: #e0f2e9;
@@ -124,6 +142,7 @@ body {
     border: 0;
     cursor: pointer;
 }
+.star { color: #333; }
 .star.active {
     color: gold;
     text-shadow: 0 0 4px rgba(0,0,0,0.2);

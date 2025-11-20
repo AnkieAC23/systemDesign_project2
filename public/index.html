@@ -80,13 +80,16 @@
 
     <form id="myForm">
       <div class="entry-row">
-        <div class="image-column">
+          <div class="image-column">
           <label class="upload-label">
             <input type="file" id="image" name="image" accept="image/*" />
             <div class="upload-button">Upload</div>
           </label>
           <div id="imagePreview" class="image-preview">No image</div>
-          <div id="tagsContainer" class="tags"></div>
+          <div class="tag-groups">
+            <div id="occasionTags" class="tags occasion-tags" aria-label="Occasion tags"></div>
+            <div id="brandTags" class="tags brand-tags" aria-label="Brand tags"></div>
+          </div>
         </div>
 
         <div class="meta-column">
@@ -103,11 +106,6 @@
           </div>
 
           <div class="meta-mid">
-            <fieldset class="brands-field">
-              <label for="brandInput">Brands</label>
-              <input type="text" id="brandInput" placeholder="Add brand and press Enter" autocomplete="off" />
-              <small>Press Enter or comma to add a brand tag.</small>
-            </fieldset>
 
             <fieldset class="occasion-field">
               <label for="occasionSelect">Occasion</label>
@@ -125,6 +123,13 @@
               </select>
               <input type="text" id="occasionOther" placeholder="Please specify" style="display:none; margin-top:0.5rem;" />
             </fieldset>
+
+            <fieldset class="brands-field">
+              <label for="brandInput">Brands</label>
+              <input type="text" id="brandInput" placeholder="Add brand and press Enter" autocomplete="off" />
+              <small>Press Enter or comma to add a brand tag.</small>
+            </fieldset>
+
           </div>
 
           <div class="meta-bottom">

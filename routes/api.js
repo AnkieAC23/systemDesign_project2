@@ -28,6 +28,28 @@ router.post('/data', async (req, res) => {
     }
 })
 
+// Create via /outfits: map incoming frontend fields to Prisma model
+router.post('/outfits', async (req, res) => {
+    try {
+        const payload = req.body || {}
+        const data = {
+            photoURL: payload.image || payload.photoURL || null,
+            date: payload.date ? new Date(payload.date) : null,
+            title: payload.name || payload.title || null,
+            brands: payload.brands || null,
+            occasion: payload.occasion || null,
+            rating: payload.rating != null ? Number(payload.rating) : null,
+            notes: payload.notes || null
+        }
+
+        const created = await prisma[model].create({ data })
+        res.status(201).send(created)
+    } catch (err) {
+        console.error('POST /outfits error:', err)
+        res.status(500).send({ error: 'Failed to create outfit', details: err.message || err })
+    }
+})
+
 
 // ----- READ (GET) list ----- 
 router.get('/outfits', async (req, res) => {

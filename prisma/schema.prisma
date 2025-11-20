@@ -9,11 +9,11 @@ datasource db {
 
 model outfits {
   id        String @id @default(auto()) @map("_id") @db.ObjectId
-  photoURL  String
-  date      DateTime @db.Date
-  title     String?
-  brand     String?
-  occasion  String?
   rating    Int?
   notes     String?
+  photoURL  String
+  date      DateTime
+  title     String?
+  brands    Json?
+  occasion  String?
 }
