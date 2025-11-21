@@ -4,14 +4,96 @@ body {
     width: 100%;
     margin: 0;
     text-align: center;
-    font-family: "Jost", sans-serif;
-    font-optical-sizing: auto;
-    font-weight: 400;
+    /* Use Niveau Grotesk Light via Adobe Typekit; fall back to system sans */
+    font-family: "Niveau Grotesk", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 300;
     font-style: normal;
     display: flex;
     flex-direction: column;
     align-items: center;
     background-color: lightgreen
+}
+
+/* Home banner styles */
+.top-space {
+    height: 40px;
+}
+.site-header {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+}
+.login-button {
+    position: absolute;
+    right: 2rem;
+    top: 0.5rem;
+    background: rgba(255,255,255,0.9);
+    color: #034d16;
+    padding: 0.5rem 0.9rem;
+    border-radius: 0.5rem;
+    text-decoration: none;
+    font-weight: 700;
+}
+.home-banner {
+    position: relative;
+    height: 420px;
+    background-image: url('image.jpeg');
+    background-position: center;
+    background-size: cover;
+    display: flex;
+    align-items: center;
+}
+.home-banner::after {
+    /* subtle dark overlay */
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.25));
+}
+.banner-overlay {
+    position: relative; /* above the overlay */
+    z-index: 2;
+    padding-left: 6vw;
+    max-width: 60%;
+    color: white;
+}
+.banner-title {
+    margin: 0 0 1rem 0;
+    line-height: 1.05;
+    text-align: left;
+}
+.banner-small {
+    display: block;
+    font-family: "Niveau Grotesk", "Helvetica Neue", Arial, sans-serif;
+    font-weight: 300;
+    font-size: 1.2rem;
+    letter-spacing: 0.04em;
+}
+.banner-large {
+    display: block;
+    font-family: "Minion Pro", Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 2.2rem;
+    letter-spacing: 0.08em;
+}
+.cta-button {
+    display: inline-block;
+    margin-top: 0.75rem;
+    background: white;
+    color: #034d16;
+    padding: 0.6rem 1rem;
+    border-radius: 0.6rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+.intro-section {
+    padding: 3rem 6vw;
+    background: white;
+}
+.intro-inner {
+    max-width: 60rem;
+    margin: 0 auto;
+    color: #222;
 }
 
 /* New form layout styles */
@@ -160,6 +242,9 @@ h2 {
     align-items: center;
     gap: 1rem;
     margin: auto;
+    /* Titles use Minion Pro Bold from Typekit */
+    font-family: "Minion Pro", Georgia, 'Times New Roman', serif;
+    font-weight: 700;
 }
 
 h2 img {
