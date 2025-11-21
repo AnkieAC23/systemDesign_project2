@@ -8,18 +8,31 @@
 </head>
 <body>
   <header class="site-header">
-    <a class="home-button" href="home.html" title="Home">🏠</a>
-    <a class="profile-button" href="#" title="Profile">👤</a>
+    <div class="outfits-nav">
+      <a class="nav-icon home-icon" href="home.html" title="Home">
+        <img src="home.png" alt="Home" />
+      </a>
+      <div class="nav-icon profile-icon" id="profileMenuWrapper" title="Profile" tabindex="0">
+        <img src="profile.png" alt="Profile" />
+        <div class="profile-dropdown" id="profileDropdown" aria-hidden="true">
+          <a href="#" class="dropdown-item">Settings</a>
+          <a href="#" class="dropdown-item">Log Out</a>
+        </div>
+      </div>
+    </div>
   </header>
-
   <main class="outfits-page">
+    <h1 class="page-title">Your Fashion Diary</h1>
+    <div class="content-inner">
     <section class="outfits-controls">
       <div class="date-row">
-        <input type="date" id="datePicker" />
+        <div class="date-wrapper">
+          <input type="date" id="datePicker" />
+        </div>
         <div class="date-actions">
-          <button id="loadDate" title="Load date">➡</button>
-          <button id="editEntry" title="Edit entry">✎</button>
-          <button id="deleteEntry" title="Delete entry">🗑</button>
+          <button id="loadDate" class="btn-primary" title="Load date">Load</button>
+          <button id="editEntry" class="btn-edit" title="Edit entry">Edit</button>
+          <button id="deleteEntry" class="btn-delete" title="Delete entry">Delete</button>
         </div>
       </div>
     </section>
@@ -30,20 +43,29 @@
       <div class="side-nav right" id="nextDate">›</div>
     </section>
 
+    </div>
+
     <!-- Confirmation modal -->
     <div id="confirmModal" class="modal" aria-hidden="true">
       <div class="modal-content">
         <div id="confirmMessage" class="confirm-message"></div>
         <div id="confirmList" class="confirm-list"></div>
         <div class="modal-actions">
-          <button id="confirmCancel">Cancel</button>
+          <button id="confirmCancel" class="btn-outline-primary">Cancel</button>
           <button id="confirmOk" class="danger">Confirm</button>
         </div>
       </div>
     </div>
   </main>
-
   <a class="add-outfit-btn" href="index.html">＋ Add an outfit</a>
+
+  <footer>
+    The core website uses a template created by <a href="https://nsitu.ca">Harold Sikkema.</a>
+    <br>
+    The visual design, layout, and content were created by Ankie Chen. 
+    <br>  
+    © 2025 Ankie Chen.
+  </footer>
 
   <script src="outfits.js" type="module"></script>
 </body>

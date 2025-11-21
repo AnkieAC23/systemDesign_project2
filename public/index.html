@@ -32,21 +32,21 @@
 
   <main>
     <h2><span>Log an Outfit</span></h2>
-    <p>Record outfit details, brands, occasion and your notes.</p>
+    <p class="entry-desc">Record outfit details, brands, occasion, a rating and your notes.</p>
 
     <form id="myForm">
       <div class="entry-row">
           <div class="image-column">
-          <label class="upload-label">
-            <input type="file" id="image" name="image" accept="image/*" />
-            <div class="upload-button">Upload</div>
-          </label>
-          <div id="imagePreview" class="image-preview">No image</div>
-          <div class="tag-groups">
-            <div id="occasionTags" class="tags occasion-tags" aria-label="Occasion tags"></div>
-            <div id="brandTags" class="tags brand-tags" aria-label="Brand tags"></div>
+            <div id="imagePreview" class="image-preview">No image</div>
+            <label class="upload-label" style="margin-top:0.6rem; display:block; text-align:center;">
+              <input type="file" id="image" name="image" accept="image/*" />
+              <div class="upload-button">Upload a Photo</div>
+            </label>
+            <div class="tag-groups" style="margin-top:0.6rem;">
+              <div id="occasionTags" class="tags occasion-tags" aria-label="Occasion tags"></div>
+              <div id="brandTags" class="tags brand-tags" aria-label="Brand tags"></div>
+            </div>
           </div>
-        </div>
 
         <div class="meta-column">
           <div class="meta-top">
@@ -99,10 +99,12 @@
                 <button type="button" class="star" data-value="5">☆</button>
               </div>
             </fieldset>
+          </div>
 
+          <div class="notes-row">
             <fieldset class="notes-field">
               <label for="notes">Personal Notes</label>
-              <textarea id="notes" name="notes" rows="5" placeholder="Write your thoughts..."></textarea>
+              <textarea id="notes" name="notes" rows="6" placeholder="Write your thoughts..."></textarea>
             </fieldset>
           </div>
         </div>

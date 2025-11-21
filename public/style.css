@@ -17,6 +17,7 @@ body {
 :root {
     --banner-left: 6vw; /* banner/title left offset */
     --content-left: 6vw; /* intro/footer left offset (moved slightly left) */
+    --card-max: 720px; /* max width for outfit card content */
 }
 
 /* Home banner styles */
@@ -166,11 +167,11 @@ body {
 
 /* Footer aligned with banner and intro */
 footer {
-    margin: 3rem 0; /* increase top gap so footer sits further from intro */
+    margin: 0.75rem 0 1.5rem 0; /* move footer slightly higher */
     padding-left: var(--content-left);
     color: #09273a;
-    font-size: 0.85rem; /* slightly smaller footer text */
-    line-height: 1.6; /* increased line-height for footer */
+    font-size: 0.9rem;
+    line-height: 1.6;
     text-align: left;
 }
 
@@ -181,7 +182,7 @@ footer {
     width: 100%;
 }
 .image-column {
-    width: 220px;
+    width: 260px;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -194,15 +195,15 @@ footer {
     display: none;
 }
 .upload-button {
-    background: #036903;
+    background: #09273a; /* match primary */
     color: white;
-    padding: 0.5rem 1rem;
+    padding: 0.42rem 0.9rem;
     border-radius: 0.5rem;
     font-weight: 700;
 }
 .image-preview {
-    width: 200px;
-    height: 200px;
+    width: 260px;
+    height: 260px;
     border: 1px dashed #aaa;
     display: flex;
     align-items: center;
@@ -224,20 +225,20 @@ footer {
 }
 .meta-top {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem; /* bring title and date closer together */
 }
 .name-field {
-    flex: 2;
+    flex: 3; /* extend title input */
 }
 .date-field {
-    flex: 1;
+    flex: 1; /* date smaller but closer */
 }
 .meta-mid {
     display: flex;
     gap: 1rem;
 }
 .brands-field {
-    flex: 2;
+    flex: 1; /* make brands and occasion similar sizes */
 }
 .occasion-field {
     flex: 1;
@@ -247,7 +248,7 @@ footer {
     gap: 1rem;
 }
 .rating-field {
-    flex: 0 0 180px;
+    flex: 0 0 250px;
 }
 .notes-field {
     flex: 1;
@@ -256,12 +257,15 @@ footer {
 /* Disable textarea resizing for personal notes */
 #notes {
     resize: none;
+    font-size: 1rem;
+    min-height: 160px; /* make personal notes larger */
 }
+.notes-row { margin-top: 0.6rem }
 .tags {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    max-width: 200px;
+    max-width: 320px;
 }
 
 .tag-groups {
@@ -279,25 +283,31 @@ footer {
 .tag {
     background: #e0f2e9;
     color: #09273a;
-    padding: 0.25rem 0.5rem;
+    padding: 0.2rem 0.45rem; /* slightly smaller */
     border-radius: 999px;
     display: inline-flex;
-    gap: 0.4rem;
+    gap: 0.35rem;
     align-items: center;
     font-weight: 600;
+    font-size: 0.85rem; /* smaller tag text */
 }
 .tag button { 
     background: transparent;
     border: 0;
     color: #09273a;
     cursor: pointer;
+    font-size: 0.95em;
 }
+
+/* Color coding for tags: occasion = blue-green tint; brand = blue-purple tint */
+.tag.occasion-tag { background: #e6f1f8; color: #09273a }
+.tag.brand-tag { background: #ecefff; color: #09273a }
 .stars { 
     display: flex;
     gap: 0.25rem;
 }
 .star {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
     background: transparent;
     border: 0;
     cursor: pointer;
@@ -307,6 +317,9 @@ footer {
     color: gold;
     text-shadow: 0 0 4px rgba(9,39,58,0.2);
 }
+.star:focus { outline: 1px solid rgba(9,39,58,0.12); outline-offset: 2px }
+.rating-field label { display:block }
+.stars { margin-top: 0.35rem }
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -325,6 +338,9 @@ h2 {
     font-weight: 700;
 }
 
+/* Specific spacing for the 'Log an Outfit' heading */
+main h2 { padding-top: 1.25rem }
+
 h2 img {
     width: 2rem;
 }
@@ -333,11 +349,22 @@ p {
     font-size: 1.25rem;
 }
 
+/* Intro paragraph on the index page */
+.entry-desc {
+    text-align: center;
+    color: #666; /* match existing UI grey */
+    font-size: 0.95rem; /* slightly smaller */
+    margin: 0.5rem auto 1rem auto;
+    max-width: 760px;
+}
+
 nav {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
     margin: 1rem;
+    padding-left: 10px;
+    padding-right: 10px;
 }
 
 .example {
@@ -415,6 +442,9 @@ main {
     flex-direction: column;
 }
 
+/* Center the outfits page horizontally and constrain width */
+main.outfits-page { max-width: 960px; margin: 1.5rem auto; padding: 0.5rem; }
+
 #status p {
     display: none;
 }
@@ -430,7 +460,14 @@ form {
 .outfit-container {
     position: relative;
     min-height: 320px;
-    padding: 2rem;
+    padding: 1rem; /* reduced padding to match other pages */
+    margin-top: -1.25rem; /* move white area higher */
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center; /* center the visible card area */
 }
 .outfit-card {
     display: flex;
@@ -443,22 +480,195 @@ form {
     align-items: flex-start;
     margin: 1rem 0;
 }
-.outfit-card .card-left {
-    width: 220px;
+.outfit-card {
+    max-width: var(--card-max);
+    width: var(--card-max); /* fixed card width (will shrink via max-width on small screens) */
+    padding: 1.75rem 2rem; /* keep background large but slightly less vertical padding */
+    border-radius: 1rem;
+    display: flex;
+    gap: 0.35rem; /* bring text much closer to image */
+    box-sizing: border-box;
 }
-.outfit-card .card-left img { width: 220px; height: 220px; object-fit: cover; border-radius: 0.5rem }
-.outfit-card .card-right { flex: 1 }
-.card-title { font-size: 1.25rem; margin: 0 0 0.25rem 0 }
-.card-date { color: #666; margin-bottom: 0.5rem }
-.card-rating { color: gold; margin-bottom: 0.75rem }
+.outfit-card .card-left {
+    width: 240px; /* slightly narrower image so text can sit closer */
+    flex-shrink: 0;
+}
+.outfit-card .card-left img { width: 240px; height: 240px; object-fit: contain; object-position: left center; border-radius: 0.5rem }
+.outfit-card .card-right { flex: 1; min-width: 0; padding-left: 0 }
+.card-title { color: #09273a; font-size: 1.45rem; margin: 0 0 0.3rem 0; font-weight: 800 }
+.card-date { color: #666; margin-bottom: 0.5rem; font-size: 0.8rem }
+.card-rating {
+    color: gold;
+    margin-bottom: 0.75rem;
+    font-size: 1.6rem; /* slightly smaller star/rating display */
+    line-height: 1;
+    display: inline-block;
+    min-width: 120px; /* ensures the rating area has some width */
+    box-sizing: border-box;
+}
 .card-notes { margin-top: 0.75rem; color: #09273a }
 .card-tags { margin-top: 0.5rem }
-.empty-card { padding: 2rem; border-radius: 0.6rem; border: 1px dashed rgba(9,39,58,0.08); background: #fdf2e0; }
-.empty-content { color: #444; font-weight: 600 }
-.side-nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 2.2rem; color: rgba(9,39,58,0.5); padding: 0.5rem 0.8rem; cursor: pointer; user-select: none }
-.side-nav.left { left: 0 }
-.side-nav.right { right: 0 }
+.empty-card {
+    /* Match the outfit-card dimensions/feel but stay visibly the "empty" prompt */
+    max-width: var(--card-max);
+    width: var(--card-max); /* same fixed width as .outfit-card */
+    margin: 1rem auto;
+    padding: 1.75rem 2rem; /* same inner padding as .outfit-card */
+    border-radius: 1rem;
+    background: #fdf2e0; /* yellow tint matching site empty state */
+    border: 1px solid rgba(9,39,58,0.06);
+    box-shadow: 0 4px 14px rgba(9,39,58,0.06);
+    display: flex; /* center text both vertically and horizontally */
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    box-sizing: border-box;
+    min-height: 330px; /* slightly longer so empty card reads as more prominent */
+}
+.card-tags { margin-top: 0.5rem }
+.card-tags .card-occasion { margin-bottom: 0.4rem }
+.card-tags .card-brands { display: flex; gap: 0.4rem; flex-wrap: wrap }
+.empty-content { color: #444; font-weight: 600; max-width: 600px; margin: 0 auto }
 .add-outfit-btn { position: fixed; right: 1.5rem; bottom: 1.5rem; background: #09273a; color: white; padding: 0.8rem 1rem; border-radius: 0.6rem; text-decoration: none; font-weight: 700 }
+
+/* Outfits page nav icons (image buttons) — distinct from the login/profile button style */
+.nav-icon {
+    position: fixed;
+    top: 1rem;
+    z-index: 1100;
+    background: transparent;
+    padding: 0.15rem;
+    border-radius: 0.45rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+.nav-icon img {
+    width: 30px;
+    height: 30px;
+    display: block;
+}
+.nav-icon.home-icon { left: 1rem; }
+.nav-icon.profile-icon { right: 1.5rem; }
+
+/* Dropdown for profile (matches site palette and simple existing styling) */
+.profile-dropdown {
+    display: none;
+    position: fixed;
+    top: 3.6rem; /* just below the icon */
+    right: 1.5rem;
+    background: white;
+    border: 1px solid rgba(9,39,58,0.08);
+    box-shadow: 0 8px 24px rgba(9,39,58,0.12);
+    padding: 0.25rem;
+    border-radius: 0.45rem;
+    min-width: 140px;
+    z-index: 1110;
+}
+.profile-dropdown .dropdown-item {
+    display: block;
+    color: #09273a;
+    text-decoration: none;
+    padding: 0.55rem 0.7rem;
+    font-weight: 600;
+}
+.profile-dropdown .dropdown-item:hover {
+    background: rgba(9,39,58,0.04);
+}
+
+/* Page title */
+.page-title {
+    text-align: center;
+    margin: 1.25rem 0 0.5rem 0;
+    font-family: "Minion Pro", Georgia, 'Times New Roman', serif;
+    color: #09273a;
+    font-size: 1.8rem;
+}
+
+/* Content inner aligns title, controls, and container to the same width as the cards */
+.content-inner {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 2rem; /* match .outfit-card horizontal padding (2rem) */
+    box-sizing: border-box;
+}
+
+.page-title { padding: 0; }
+.outfits-controls { width: 100%; padding: 0; box-sizing: border-box; }
+
+/* Date layout centered and extended */
+.date-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+.date-wrapper { display: flex; flex-direction: column; align-items: center; }
+#datePicker {
+    width: 380px; /* longer */
+    padding: 0.5rem;
+    border-radius: 0.45rem;
+    border: 1px solid rgba(9,39,58,0.12);
+}
+
+.display-date { margin-top: 0.35rem; color: #444; font-weight: 600 }
+
+/* Date action buttons next to date */
+.date-actions { display: flex; gap: 0.4rem; align-items: center }
+.date-actions button { padding: 0.32rem 0.6rem; border-radius: 0.4rem; font-weight: 700; cursor: pointer; display:flex; align-items:center; justify-content:center; text-align:center; font-size:0.9rem }
+.btn-primary { background: #09273a; color: white; border: 1px solid #09273a; font-size:0.95rem }
+.btn-primary:hover { filter: brightness(0.95) }
+.btn-edit { background: transparent; color: #d97706; border: 2px solid #d97706 }
+.btn-edit:hover { background: #d97706; color: white }
+.btn-delete { background: transparent; color: #b21e1e; border: 2px solid #b21e1e }
+.btn-delete:hover { background: #b21e1e; color: white }
+
+/* Outlined primary button for modal Cancel */
+.btn-outline-primary {
+    background: transparent;
+    color: #09273a;
+    border: 2px solid #09273a;
+    padding: 0.28rem 0.5rem;
+    border-radius: 0.4rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+.btn-outline-primary:hover {
+    background: rgba(9,39,58,0.06);
+}
+
+/* Star sizing for rating widget - slightly reduced for balance */
+.star { font-size: 2.0rem }
+
+/* Personal note label styling inside cards */
+.card-notes strong { display: block; font-weight: 800; color: #09273a; margin-bottom: 0.2rem; font-size:0.88rem }
+.card-notes .note-text { display: block; font-size:0.86rem; color:#333 }
+
+/* Outfit title styling */
+.card-title { color: #09273a; font-size: 1.45rem; margin: 0 0 0.3rem 0; font-weight: 800 }
+
+/* Make side-nav more obvious */
+.side-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.6rem; /* smaller arrows */
+    color: white;
+    background: #09273a;
+    padding: 0.45rem 0.6rem; /* smaller pill */
+    border-radius: 0.5rem;
+    box-shadow: 0 6px 18px rgba(9,39,58,0.18);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.side-nav.left { left: calc(50% - (var(--card-max) / 2) - 48px); }
+.side-nav.right { right: calc(50% - (var(--card-max) / 2) - 48px); }
 
 /* Modal styles */
 .modal {
@@ -478,7 +688,11 @@ form {
     box-shadow: 0 8px 30px rgba(9,39,58,0.12);
 }
 .modal-actions { display:flex; justify-content:flex-end; gap:0.5rem; margin-top:1rem }
-.modal .danger { background: #b21e1e; color: white; padding: 0.5rem 0.8rem; border-radius: 0.4rem; border: 0 }
+.modal .danger { background: #b21e1e; color: white; padding: 0.36rem 0.6rem; border-radius: 0.4rem; border: 0; font-size: 0.92rem }
+
+/* Make modal buttons slightly smaller and consistent */
+.modal-actions button { padding: 0; margin-left: 0.5rem }
+.modal-actions .btn-outline-primary, .modal-actions .danger { padding: 0.32rem 0.56rem }
 .confirm-list { max-height: 220px; overflow:auto; margin-top:0.5rem }
 .confirm-row { margin-bottom:0.5rem }
 

@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', async () => {
     let brands = []
     let imageDataUrl = null
     let rating = 0
+    let previousOcc = null
+
+    // Tag containers need to be available before we call renderTags()
+    const occasionTagsContainer = document.getElementById('occasionTags')
+    const brandTagsContainer = document.getElementById('brandTags')
 
     // detect editId from query string and populate form if present
     const params = new URLSearchParams(window.location.search)
@@ -30,15 +35,48 @@ document.addEventListener('DOMContentLoaded', async () => {
             const res = await fetch('/outfits/' + encodeURIComponent(editId))
             if (res.ok) {
                 const item = await res.json()
+                    console.log('Loaded item for edit:', item)
                 // populate fields
                 const nameField = document.querySelector('#name')
                 if (nameField) nameField.value = item.title || item.name || ''
                 const dateField = document.querySelector('#date')
-                if (dateField && item.date) dateField.value = (new Date(item.date)).toISOString().slice(0,10)
+                if (dateField && item.date) {
+                    // parse returned date and set value using local components to avoid timezone shift
+                    const d = new Date(item.date)
+                    if (!isNaN(d)) {
+                        const y = d.getFullYear()
+                        const m = String(d.getMonth() + 1).padStart(2, '0')
+                        const day = String(d.getDate()).padStart(2, '0')
+                        dateField.value = `${y}-${m}-${day}`
+                    } else {
+                        // fallback to slicing if it's already a YYYY-MM-DD string
+                        dateField.value = String(item.date).slice(0,10)
+                    }
+                }
                 if (item.brands && Array.isArray(item.brands)) {
                     brands = item.brands.slice()
                 }
-                previousOcc = item.occasion || null
+                // populate occasion select and 'Other' input if needed
+                if (item.occasion) {
+                    // if the select contains the option, select it; otherwise choose Other and populate the text input
+                    if (occasionSelect) {
+                        const has = Array.from(occasionSelect.options).some(o => o.value === item.occasion)
+                        if (has) {
+                            occasionSelect.value = item.occasion
+                            if (occasionOther) occasionOther.style.display = 'none'
+                        } else {
+                            occasionSelect.value = 'Other'
+                            if (occasionOther) {
+                                occasionOther.style.display = 'block'
+                                occasionOther.value = item.occasion
+                            }
+                        }
+                    }
+                    previousOcc = item.occasion
+                } else {
+                    previousOcc = null
+                    if (occasionSelect) occasionSelect.value = ''
+                }
                 rating = item.rating != null ? Number(item.rating) : 0
                 if (item.notes) {
                     const notes = document.querySelector('#notes')
@@ -84,8 +122,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Tags handling: separate brand tags and occasion tag
-    const occasionTagsContainer = document.getElementById('occasionTags')
-    const brandTagsContainer = document.getElementById('brandTags')
 
     function renderTags() {
         // Render occasion (single) and brand list
@@ -93,7 +129,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             occasionTagsContainer.innerHTML = ''
             if (previousOcc) {
                 const span = document.createElement('span')
-                span.className = 'tag'
+                span.className = 'tag occasion-tag'
                 span.textContent = previousOcc
                 const btn = document.createElement('button')
                 btn.type = 'button'
@@ -111,7 +147,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             brandTagsContainer.innerHTML = ''
             brands.forEach((t, i) => {
                 const span = document.createElement('span')
-                span.className = 'tag'
+                span.className = 'tag brand-tag'
                 span.textContent = t
                 const btn = document.createElement('button')
                 btn.type = 'button'
@@ -177,7 +213,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     }
 
     // Occasion: show 'Other' input when selected and add as a tag
-    let previousOcc = null
     if (occasionSelect) {
         occasionSelect.addEventListener('change', () => {
             const val = occasionSelect.value
@@ -269,8 +304,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             // assemble JSON data
             const data = {}
             data.name = nameField.value.trim()
-            const dateVal = myForm.querySelector('#date').value
-            data.date = dateVal ? new Date(dateVal).toISOString() : null
+                const dateVal = myForm.querySelector('#date').value
+                // store dates as plain YYYY-MM-DD to avoid timezone shifts
+                data.date = dateVal ? dateVal : null
             data.brands = brands.slice()
             const occ = occasionSelect ? occasionSelect.value : null
             data.occasion = (occ === 'Other') ? (occasionOther ? occasionOther.value.trim() || null : null) : (occ || null)
@@ -306,7 +342,34 @@ const createItem = async (myData) => {
         const method = editId ? 'PUT' : 'POST'
         const url = editId ? ('/outfits/' + encodeURIComponent(editId)) : '/outfits'
         const headers = { 'Accept': 'application/json', 'Content-Type': 'application/json' }
-        const response = await fetch(url, { method, headers, body: JSON.stringify(myData) })
+        // Build payload for POST/PUT. For PUT we explicitly include all editable
+        // fields (title, date, brands, occasion, rating, notes, photoURL) so the
+        // server updates them reliably.
+        let payload = myData
+        if (method === 'PUT') {
+            payload = {}
+            if (myData.name !== undefined) payload.title = myData.name
+            // ensure date is sent as a full datetime string (local midnight)
+            if (myData.date !== undefined) payload.date = myData.date ? (myData.date + 'T00:00:00') : null
+            // include brands and rating even if empty so server will update them
+            payload.brands = Array.isArray(myData.brands) ? myData.brands : (myData.brands ? myData.brands : [])
+            payload.occasion = myData.occasion !== undefined ? myData.occasion : null
+            payload.rating = myData.rating !== undefined ? myData.rating : null
+            payload.notes = myData.notes !== undefined ? myData.notes : null
+            // include photoURL if present (prevents clearing it accidentally)
+            if (myData.image !== undefined) payload.photoURL = myData.image
+        }
+        console.log('Submitting payload for', method, url, payload)
+        const response = await fetch(url, { method, headers, body: JSON.stringify(payload) })
+        if (!response.ok) {
+            // try to read server error message to help debugging
+            try {
+                const errBody = await response.text()
+                console.error('Server responded with error:', response.status, errBody)
+            } catch (e) {
+                console.error('Server responded with status', response.status)
+            }
+        }
         // Check if the response status is OK 
         if (!response.ok) {
             try {

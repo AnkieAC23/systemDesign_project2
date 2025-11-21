@@ -17,16 +17,42 @@ let availableDates = [] // array of YYYY-MM-DD strings
 let currentDate = null
 
 function isoDateOnly(dt) {
+  // Normalize stored date values to YYYY-MM-DD without timezone shifts.
   if (!dt) return null
+  if (typeof dt === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(dt)) return dt
   const d = new Date(dt)
   if (isNaN(d)) return null
-  return d.toISOString().slice(0,10)
+  return formatLocalYYYYMMDD(d)
+}
+
+function formatLocalYYYYMMDD(d) {
+  // Return YYYY-MM-DD using local date components to avoid UTC shifts
+  if (!(d instanceof Date)) d = new Date(d)
+  if (isNaN(d)) return null
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+function formatLongDate(dateStr) {
+  if (!dateStr) return ''
+  // Ensure we interpret date-only strings as local midnight to avoid shifting
+  const parse = (s) => {
+    if (typeof s === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(s)) return new Date(s + 'T00:00:00')
+    return new Date(s)
+  }
+  const d = parse(dateStr)
+  if (isNaN(d)) return dateStr
+  const opts = { year: 'numeric', month: 'long', day: 'numeric' }
+  return d.toLocaleDateString(undefined, opts)
 }
 
 function shiftDateBy(dateStr, days) {
-  const d = dateStr ? new Date(dateStr) : new Date()
-  d.setDate(d.getDate() + days)
-  return d.toISOString().slice(0,10)
+  // dateStr is expected as YYYY-MM-DD; parse as local midnight then shift
+  const base = dateStr && /^\d{4}-\d{2}-\d{2}$/.test(dateStr) ? new Date(dateStr + 'T00:00:00') : (dateStr ? new Date(dateStr) : new Date())
+  base.setDate(base.getDate() + days)
+  return formatLocalYYYYMMDD(base)
 }
 
 function showConfirm(message, items=[]) {
@@ -80,11 +106,12 @@ async function loadAll() {
   const params = new URLSearchParams(window.location.search)
   const requested = params.get('date')
   // set currentDate to requested if present, else today or first available
-  const today = new Date().toISOString().slice(0,10)
+  const today = formatLocalYYYYMMDD(new Date())
   if (requested) currentDate = requested
   else currentDate = availableDates.includes(today) ? today : (availableDates[0] || today)
   datePicker.value = currentDate
   renderForDate(currentDate)
+  // displayDate element removed per UX request
 }
 
 // no dropdown to render; date selection is via date input
@@ -98,9 +125,11 @@ function renderForDate(dateStr) {
   if (!matches || matches.length === 0) {
     const empty = document.createElement('div')
     empty.className = 'empty-card'
-    empty.innerHTML = `<div class="empty-content">Your wardrobe is empty. Start by adding an outfit!</div>`
+    // match the card appearance but with a friendly prompt and a line break
+    empty.innerHTML = `<div class="empty-content">Your wardrobe is empty.<br/>Start by adding an outfit!</div>`
     outfitContainer.appendChild(empty)
-    outfitContainer.style.background = '#fdf2e0'
+    // ensure container background stays transparent so only the card shows the yellow tint
+    outfitContainer.style.background = 'transparent'
     return
   }
 
@@ -109,15 +138,18 @@ function renderForDate(dateStr) {
     const card = document.createElement('article')
     card.className = 'outfit-card'
     const imgHtml = item.photoURL ? `<img src="${item.photoURL}" alt="${item.title || 'Outfit'}"/>` : `<div class="no-photo">No image</div>`
-    const tagsHtml = (item.brands && item.brands.length) ? `<div class="card-tags">${item.brands.map(b=>`<span class="tag">${b}</span>`).join('')}</div>` : ''
+    // Build tags: put occasion on its own row and brands on a separate row
+    const occasionHtml = item.occasion ? `<div class="card-occasion"><span class="tag occasion-tag">${item.occasion}</span></div>` : ''
+    const brandsHtml = (item.brands && item.brands.length) ? `<div class="card-brands">${item.brands.map(b => `<span class="tag brand-tag">${b}</span>`).join('')}</div>` : ''
+    const tagsHtml = (occasionHtml || brandsHtml) ? `<div class="card-tags">${occasionHtml}${brandsHtml}</div>` : ''
     const stars = item.rating != null ? '★'.repeat(item.rating) + '☆'.repeat(5-item.rating) : '<i>No rating</i>'
     card.innerHTML = `
       <div class="card-left">${imgHtml}${tagsHtml}</div>
       <div class="card-right">
         <h3 class="card-title">${item.title || 'Untitled'}</h3>
-        <div class="card-date">${isoDateOnly(item.date) || 'No date'}</div>
+        <div class="card-date">${formatLongDate(item.date) || 'No date'}</div>
         <div class="card-rating">${stars}</div>
-        <div class="card-notes">${item.notes || '<i>No notes</i>'}</div>
+        <div class="card-notes"><strong>Personal Note:</strong> ${item.notes || '<i>No notes</i>'}</div>
       </div>
     `
     card.dataset.id = item.id
@@ -201,5 +233,36 @@ editBtn.addEventListener('click', async () => {
 
 // initialize
 loadAll()
+
+// Profile dropdown toggle (non-functional Settings / Log Out links)
+const profileWrapper = document.getElementById('profileMenuWrapper')
+const profileDropdown = document.getElementById('profileDropdown')
+if (profileWrapper && profileDropdown) {
+  function hideProfileDropdown() {
+    profileDropdown.style.display = 'none'
+    profileDropdown.setAttribute('aria-hidden', 'true')
+  }
+  function showProfileDropdown() {
+    profileDropdown.style.display = 'block'
+    profileDropdown.setAttribute('aria-hidden', 'false')
+  }
+
+  profileWrapper.addEventListener('click', (ev) => {
+    ev.stopPropagation()
+    const isOpen = profileDropdown.getAttribute('aria-hidden') === 'false'
+    if (isOpen) hideProfileDropdown()
+    else showProfileDropdown()
+  })
+
+  // Close when clicking outside
+  document.addEventListener('click', (ev) => {
+    if (!profileWrapper.contains(ev.target)) hideProfileDropdown()
+  })
+
+  // Close on Escape
+  document.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') hideProfileDropdown()
+  })
+}
 
 export {}
