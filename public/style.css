@@ -3,20 +3,25 @@ body {
     height: 100%;
     width: 100%;
     margin: 0;
-    text-align: center;
+    text-align: left;
     /* Use Niveau Grotesk Light via Adobe Typekit; fall back to system sans */
     font-family: "Niveau Grotesk", "Helvetica Neue", Arial, sans-serif;
     font-weight: 300;
     font-style: normal;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    background-color: lightgreen
+    align-items: stretch;
+    background-color: #fcfaf6;
+}
+
+:root {
+    --banner-left: 6vw; /* banner/title left offset */
+    --content-left: 6vw; /* intro/footer left offset (moved slightly left) */
 }
 
 /* Home banner styles */
 .top-space {
-    height: 40px;
+    height: 80px; /* increased to add more space between login and banner image */
 }
 .site-header {
     position: relative;
@@ -24,11 +29,13 @@ body {
     max-width: 100%;
 }
 .login-button {
-    position: absolute;
+    /* place above the banner and visible */
+    position: fixed;
     right: 2rem;
-    top: 0.5rem;
-    background: rgba(255,255,255,0.9);
-    color: #034d16;
+    top: 1rem;
+    z-index: 1000;
+    background: #09273a; /* dark button */
+    color: white; /* light text */
     padding: 0.5rem 0.9rem;
     border-radius: 0.5rem;
     text-decoration: none;
@@ -42,20 +49,27 @@ body {
     background-size: cover;
     display: flex;
     align-items: center;
+    /* make banner full-bleed */
+    width: 100vw;
+    left: 50%;
+    right: 50%;
+    margin-left: -50vw;
+    margin-right: -50vw;
 }
 .home-banner::after {
     /* subtle dark overlay */
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.25));
+    background: linear-gradient(180deg, rgba(0,0,0,0.02), rgba(0,0,0,0.02));
 }
 .banner-overlay {
     position: relative; /* above the overlay */
     z-index: 2;
-    padding-left: 6vw;
+    padding-left: var(--banner-left);
     max-width: 60%;
-    color: white;
+    color: #09273a;
+    text-align: left;
 }
 .banner-title {
     margin: 0 0 1rem 0;
@@ -73,27 +87,63 @@ body {
     display: block;
     font-family: "Minion Pro", Georgia, 'Times New Roman', serif;
     font-weight: 700;
-    font-size: 2.2rem;
+    font-size: 2.5rem;
+    margin-top: 0.8rem; /* add space between 'Welcome to' and 'YOUR' */
     letter-spacing: 0.08em;
+}
+.banner-large .banner-your {
+    display: block;
+    font-size: 2.2rem;
+}
+.banner-large .banner-diary {
+    display: block;
+    font-size: 2.6rem;
 }
 .cta-button {
     display: inline-block;
     margin-top: 0.75rem;
-    background: white;
-    color: #034d16;
+    background: #09273a; /* dark background */
+    color: white; /* light text */
     padding: 0.6rem 1rem;
     border-radius: 0.6rem;
     font-weight: 700;
     text-decoration: none;
+    text-align: left;
 }
+
+/* Use single left offset for consistent alignment */
+/* (banner-overlay already defined above with full properties) */
+
+/* Intro layout: use container padding + left offset variable */
 .intro-section {
-    padding: 3rem 6vw;
-    background: white;
-}
-.intro-inner {
+    /* moved closer to the banner, with extra bottom spacing */
+    padding: 1.25rem 0 2rem 0; /* top 1.25rem, bottom 2rem to increase gap to footer */
+    padding-left: var(--content-left);
+    background: transparent;
     max-width: 60rem;
-    margin: 0 auto;
-    color: #222;
+    color: #09273a;
+    text-align: left;
+}
+    /* Make intro paragraph text slightly smaller for better hierarchy */
+    .intro-inner h2 {
+        margin-bottom: 1rem; /* more space between heading and body text */
+    }
+
+    .intro-inner p {
+        font-size: 1rem;
+        line-height: 1.6;
+        color: #09273a;
+        margin-top: 1rem; /* increase gap between heading and paragraph */
+    }
+
+/* Footer aligned with banner and intro */
+footer {
+    margin: 3rem 0; /* increase top gap so footer sits further from intro */
+    padding-left: var(--content-left);
+    color: #09273a;
+    font-size: 0.85rem; /* slightly smaller footer text */
+    line-height: 1.6; /* increased line-height for footer */
+    text-align: left;
 }
 
 /* New form layout styles */
@@ -200,7 +250,7 @@ body {
 }
 .tag {
     background: #e0f2e9;
-    color: #034d16;
+    color: #09273a;
     padding: 0.25rem 0.5rem;
     border-radius: 999px;
     display: inline-flex;
@@ -211,7 +261,7 @@ body {
 .tag button { 
     background: transparent;
     border: 0;
-    color: #034d16;
+    color: #09273a;
     cursor: pointer;
 }
 .stars { 
@@ -224,10 +274,10 @@ body {
     border: 0;
     cursor: pointer;
 }
-.star { color: #333; }
+.star { color: #09273a; }
 .star.active {
     color: gold;
-    text-shadow: 0 0 4px rgba(0,0,0,0.2);
+    text-shadow: 0 0 4px rgba(9,39,58,0.2);
 }
 .form-actions {
     display: flex;
@@ -263,14 +313,14 @@ nav {
 }
 
 .example {
-    border: 1px solid #666;
+    border: 1px solid rgba(9,39,58,0.12);
     border-radius: 2rem;
     padding: 1.5rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
-    background: white;
+    background: transparent;
 }
 
 .example h2 {
@@ -282,10 +332,9 @@ nav {
 }
 
 
-footer {
-    text-align: center;
-    padding: 3rem;
-}
+/* Ensure footer stays left-aligned with banner/intro (see earlier footer rule) */
+/* Removed generic padding to avoid overriding left offset; footer alignment is
+   controlled by the earlier footer rule which applies `padding-left: var(--content-left)` */
 
 
 
@@ -296,7 +345,7 @@ header ul {
 
 header .intro {
     max-width: 60rem;
-    margin: auto;
+    padding-left: var(--content-left);
     text-align: left;
 }
 
@@ -326,15 +375,14 @@ button.reset:hover {
 }
 
 
-main,
-#content {
+main { 
     margin: 0 10vw;
     max-width: 60rem;
-    margin-bottom: 4rem;
-    background: white;
-    padding: 2rem;
-    border-radius: 1rem;
-    filter: drop-shadow(0 0 1rem #ccc);
+    margin-bottom: 2rem; /* reduced bottom spacing */
+    background: transparent;
+    padding: 1rem; /* reduced padding */
+    border-radius: 0;
+    filter: none;
     display: flex;
     flex-direction: column;
 }
@@ -349,6 +397,41 @@ form {
     justify-content: center;
     gap: 1.5rem;
 }
+
+/* Outfits page styles */
+.outfit-container {
+    position: relative;
+    min-height: 320px;
+    padding: 2rem;
+}
+.outfit-card {
+    display: flex;
+    gap: 1rem;
+    background: white;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 4px 14px rgba(9,39,58,0.06);
+    border: 1px solid rgba(9,39,58,0.06);
+    align-items: flex-start;
+    margin: 1rem 0;
+}
+.outfit-card .card-left {
+    width: 220px;
+}
+.outfit-card .card-left img { width: 220px; height: 220px; object-fit: cover; border-radius: 0.5rem }
+.outfit-card .card-right { flex: 1 }
+.card-title { font-size: 1.25rem; margin: 0 0 0.25rem 0 }
+.card-date { color: #666; margin-bottom: 0.5rem }
+.card-rating { color: gold; margin-bottom: 0.75rem }
+.card-notes { margin-top: 0.75rem; color: #09273a }
+.card-tags { margin-top: 0.5rem }
+.empty-card { padding: 2rem; border-radius: 0.6rem; border: 1px dashed rgba(9,39,58,0.08); background: #fdf2e0; }
+.empty-content { color: #444; font-weight: 600 }
+.side-nav { position: absolute; top: 50%; transform: translateY(-50%); font-size: 2.2rem; color: rgba(9,39,58,0.5); padding: 0.5rem 0.8rem; cursor: pointer; user-select: none }
+.side-nav.left { left: 0 }
+.side-nav.right { right: 0 }
+.add-outfit-btn { position: fixed; right: 1.5rem; bottom: 1.5rem; background: #09273a; color: white; padding: 0.8rem 1rem; border-radius: 0.6rem; text-decoration: none; font-weight: 700 }
+
 
 fieldset {
     display: flex;
@@ -424,7 +507,7 @@ input[type=color] {
     height: 36px;
     margin: 0;
     background: white;
-    border: 1px solid #aaa;
+    border: 1px solid rgba(9,39,58,0.12);
     border-radius: 0.5rem;
     padding: 0.15rem 0.25rem;
 }

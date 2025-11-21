@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Outfits — Your Fashion Diary</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="login-button" href="#">Login</a>
+  </header>
+
+  <main class="outfits-page">
+    <section class="outfits-controls">
+      <div class="date-row">
+        <input type="date" id="datePicker" />
+        <select id="dateSelect"></select>
+        <div class="date-actions">
+          <button id="loadDate" title="Load date">➡</button>
+          <button id="editEntry" title="Edit entry">✎</button>
+          <button id="deleteEntry" title="Delete entry">🗑</button>
+        </div>
+      </div>
+    </section>
+
+    <section id="outfitContainer" class="outfit-container">
+      <!-- Outfit cards will be rendered here -->
+      <div class="side-nav left" id="prevDate">‹</div>
+      <div class="side-nav right" id="nextDate">›</div>
+    </section>
+  </main>
+
+  <a class="add-outfit-btn" href="index.html">＋ Add an outfit</a>
+
+  <script src="outfits.js" type="module"></script>
+</body>
+</html>

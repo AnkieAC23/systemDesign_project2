@@ -93,6 +93,41 @@ router.get('/search', async (req, res) => {
 })
 
 
+// ----- UPDATE (PUT) -----
+router.put('/outfits/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const payload = req.body || {}
+        const data = {}
+        if (payload.title !== undefined) data.title = payload.title
+        if (payload.notes !== undefined) data.notes = payload.notes
+        if (payload.brands !== undefined) data.brands = payload.brands
+        if (payload.occasion !== undefined) data.occasion = payload.occasion
+        if (payload.rating !== undefined) data.rating = payload.rating
+        if (payload.date !== undefined) data.date = payload.date ? new Date(payload.date) : null
+
+        const updated = await prisma[model].update({ where: { id }, data })
+        res.send(updated)
+    } catch (err) {
+        console.error('PUT /outfits/:id error:', err)
+        res.status(500).send({ error: 'Failed to update outfit', details: err.message || err })
+    }
+})
+
+
+// ----- DELETE -----
+router.delete('/outfits/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const deleted = await prisma[model].delete({ where: { id } })
+        res.send(deleted)
+    } catch (err) {
+        console.error('DELETE /outfits/:id error:', err)
+        res.status(500).send({ error: 'Failed to delete outfit', details: err.message || err })
+    }
+})
+
+
 
 
 // export the api routes for use elsewhere in our app 
