@@ -301,13 +301,24 @@ document.addEventListener('DOMContentLoaded', async () => {
                 alert('Please provide a title/name for the entry.')
                 return
             }
+            // date required
+            const dateField = myForm.querySelector('#date')
+            const dateVal = dateField ? dateField.value : ''
+            if (!dateVal) {
+                alert('Please choose a date for the outfit.')
+                return
+            }
+            // photo required (for both new entries and edits — edits should preserve existing photoDataUrl)
+            if (!imageDataUrl) {
+                alert('Please upload a photo for the outfit.')
+                return
+            }
 
             // assemble JSON data
             const data = {}
             data.name = nameField.value.trim()
-                const dateVal = myForm.querySelector('#date').value
-                // store dates as plain YYYY-MM-DD to avoid timezone shifts
-                data.date = dateVal ? dateVal : null
+            // store dates as plain YYYY-MM-DD to avoid timezone shifts
+            data.date = dateVal ? dateVal : null
             data.brands = brands.slice()
             const occ = occasionSelect ? occasionSelect.value : null
             data.occasion = (occ === 'Other') ? (occasionOther ? occasionOther.value.trim() || null : null) : (occ || null)
@@ -363,23 +374,28 @@ const createItem = async (myData) => {
         console.log('Submitting payload for', method, url, payload)
         const response = await fetch(url, { method, headers, body: JSON.stringify(payload) })
         if (!response.ok) {
+            // handle 400 validation errors from server with JSON details
+            if (response.status === 400) {
+                try {
+                    const err = await response.json()
+                    console.error('Validation error:', err)
+                    alert('Save failed: Missing required fields. Please check photo, date, and title.')
+                } catch (e) {
+                    console.error('Save failed with status 400')
+                    alert('Save failed: missing required fields.')
+                }
+                return
+            }
             // try to read server error message to help debugging
             try {
                 const errBody = await response.text()
                 console.error('Server responded with error:', response.status, errBody)
+                alert('Server error: ' + response.status + '\nSee console for details.')
             } catch (e) {
                 console.error('Server responded with status', response.status)
+                alert('Server error: ' + response.status)
             }
-        }
-        // Check if the response status is OK 
-        if (!response.ok) {
-            try {
-                console.error(await response.json())
-            }
-            catch (err) {
-                console.error(response.statusText)
-            }
-            throw new Error(response.statusText)
+            return
         }
         // If all goes well we will recieve back the submitted data
         // along with a new _id field added by MongoDB

@@ -9,8 +9,10 @@ app.get('/', (req, res) => { res.redirect('/home.html') })
 // Serve static files from /public folder (useful when running Node locally, optional on Vercel).
 app.use(express.static('public'))
 
-// Enable express to parse JSON data
-app.use(express.json())
+// Enable express to parse JSON data (increase limit to allow image data URLs)
+app.use(express.json({ limit: '12mb' }))
+// Also allow large URL-encoded payloads if needed
+app.use(express.urlencoded({ limit: '12mb', extended: true }))
 
 // Our API is defined in a separate module to keep things tidy.
 // Let's import our API endpoints and activate them.

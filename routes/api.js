@@ -42,8 +42,16 @@ router.post('/outfits', async (req, res) => {
             return new Date(d)
         }
 
+        // Validate required fields: photo (image or photoURL), date, title
+        const hasPhoto = Boolean(payload.image || payload.photoURL)
+        const hasDate = Boolean(payload.date)
+        const hasTitle = Boolean(payload.name || payload.title)
+        if (!hasPhoto || !hasDate || !hasTitle) {
+            return res.status(400).send({ error: 'Missing required fields', details: { photo: !!hasPhoto, date: !!hasDate, title: !!hasTitle } })
+        }
+
         const data = {
-            photoURL: payload.image || payload.photoURL || null,
+            photoURL: payload.image || payload.photoURL,
             date: payload.date ? normalizeDate(payload.date) : null,
             title: payload.name || payload.title || null,
             brands: payload.brands || null,
