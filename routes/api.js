@@ -129,6 +129,7 @@ router.put('/outfits/:id', async (req, res) => {
     try {
         const id = req.params.id
         const payload = req.body || {}
+        console.log('PUT /outfits/:id called with id=', id, 'payload=', JSON.stringify(payload).slice(0,1000))
         const data = {}
         if (payload.title !== undefined) data.title = payload.title
         if (payload.notes !== undefined) data.notes = payload.notes

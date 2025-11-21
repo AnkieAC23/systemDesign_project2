@@ -182,22 +182,15 @@ function gotoNextDate() {
   if (idx < availableDates.length-1) setDateTo(idx+1)
 }
 
-loadDateBtn.addEventListener('click', () => {
-  const val = datePicker.value
+// Auto-load when the user picks a date — update URL and render immediately
+datePicker.addEventListener('change', (e) => {
+  const val = e.target.value
   if (!val) return
   if (!availableDates.includes(val)) availableDates.push(val)
   availableDates.sort()
-  // update URL to include ?date= so user can share/bookmark
   const url = '/outfits.html?date=' + encodeURIComponent(val)
   history.pushState({}, '', url)
   renderForDate(val)
-})
-
-datePicker.addEventListener('change', (e) => {
-  const v = e.target.value
-  if (v) {
-    // just update picker; load is via submit button
-  }
 })
 
 prevDate.addEventListener('click', () => renderForDate(shiftDateBy(currentDate, -1)))

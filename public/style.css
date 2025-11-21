@@ -646,8 +646,8 @@ form {
 .date-actions button { padding: 0.32rem 0.6rem; border-radius: 0.4rem; font-weight: 700; cursor: pointer; display:flex; align-items:center; justify-content:center; text-align:center; font-size:0.9rem }
 .btn-primary { background: #09273a; color: white; border: 1px solid #09273a; font-size:0.95rem }
 .btn-primary:hover { filter: brightness(0.95) }
-.btn-edit { background: transparent; color: #d97706; border: 2px solid #d97706 }
-.btn-edit:hover { background: #d97706; color: white }
+.btn-edit { background: transparent; color: #09273a; border: 2px solid #09273a; padding: 0.32rem 0.6rem; border-radius: 0.4rem; font-weight: 700 }
+.btn-edit:hover { background: #09273a; color: white }
 .btn-delete { background: transparent; color: #b21e1e; border: 2px solid #b21e1e }
 .btn-delete:hover { background: #b21e1e; color: white }
 
