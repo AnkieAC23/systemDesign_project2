@@ -178,11 +178,11 @@ footer {
 /* New form layout styles */
 .entry-row {
     display: flex;
-    gap: 1.5rem;
+    gap: 0.75rem;
     width: 100%;
 }
 .image-column {
-    width: 260px;
+    width: 300px;
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
@@ -202,8 +202,8 @@ footer {
     font-weight: 700;
 }
 .image-preview {
-    width: 260px;
-    height: 260px;
+    width: 300px;
+    height: 300px;
     border: 1px dashed #aaa;
     display: flex;
     align-items: center;
@@ -221,31 +221,36 @@ footer {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 0.75rem;
+    gap: 0.4rem;
 }
 .meta-top {
     display: flex;
-    gap: 0.5rem; /* bring title and date closer together */
+    gap: 0.35rem; /* bring title and date closer together */
+    align-items: flex-start;
 }
 .name-field {
-    flex: 3; /* extend title input */
+    flex: 4; /* extend title input */
 }
+.name-field input { width: 100%; padding: 0.5rem 0.6rem; font-size: 1.05rem }
 .date-field {
-    flex: 1; /* date smaller but closer */
+    flex: 1.2; /* date slightly larger to fit on same row */
 }
+.date-field input { width: 100%; padding: 0.45rem 0.5rem }
 .meta-mid {
     display: flex;
-    gap: 1rem;
+    gap: 0.6rem;
 }
 .brands-field {
-    flex: 1; /* make brands and occasion similar sizes */
+    flex: 1.2; /* make brands and occasion similar sizes */
 }
+.brands-field input { width: 100%; padding: 0.45rem 0.5rem }
 .occasion-field {
-    flex: 1;
+    flex: 1.2;
 }
+.occasion-field select { width: 100%; padding: 0.45rem 0.5rem }
 .meta-bottom {
     display: flex;
-    gap: 1rem;
+    gap: 0.5rem;
 }
 .rating-field {
     flex: 0 0 250px;
@@ -257,21 +262,21 @@ footer {
 /* Disable textarea resizing for personal notes */
 #notes {
     resize: none;
-    font-size: 1rem;
-    min-height: 160px; /* make personal notes larger */
+    font-size: 1.02rem;
+    min-height: 200px; /* make personal notes larger */
 }
-.notes-row { margin-top: 0.6rem }
+.notes-row { margin-top: 0.2rem }
 .tags {
     display: flex;
     gap: 0.5rem;
     flex-wrap: wrap;
-    max-width: 320px;
+    max-width: 340px;
 }
 
 .tag-groups {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 0.3rem;
     align-items: flex-start;
 }
 .occasion-tags {
@@ -283,10 +288,10 @@ footer {
 .tag {
     background: #e0f2e9;
     color: #09273a;
-    padding: 0.2rem 0.45rem; /* slightly smaller */
+    padding: 0.16rem 0.36rem; /* slightly smaller */
     border-radius: 999px;
     display: inline-flex;
-    gap: 0.35rem;
+    gap: 0.3rem;
     align-items: center;
     font-weight: 600;
     font-size: 0.85rem; /* smaller tag text */
@@ -306,20 +311,39 @@ footer {
     display: flex;
     gap: 0.25rem;
 }
+.rating-field { display: flex; flex-direction: row; align-items: center; gap: 0.35rem }
 .star {
-    font-size: 1.6rem;
+    font-size: 1.5rem;
     background: transparent;
     border: 0;
     cursor: pointer;
+    padding: 0 0.12rem; /* reduce horizontal padding */
+    margin: 0;
 }
 .star { color: #09273a; }
 .star.active {
     color: gold;
     text-shadow: 0 0 4px rgba(9,39,58,0.2);
 }
-.star:focus { outline: 1px solid rgba(9,39,58,0.12); outline-offset: 2px }
-.rating-field label { display:block }
-.stars { margin-top: 0.35rem }
+.star:focus { outline: 1px solid rgba(9,39,58,0.08); outline-offset: 2px }
+.rating-field label { display:inline-block; margin: 0; font-weight: 600 }
+.stars { margin: 0; padding: 0 }
+.brands-field small {
+    font-size: 0.82rem;
+    color: #6b6b6b;
+    display: block;
+    margin-top: 0.2rem;
+}
+
+.occasion-field,
+.brands-field {
+    padding-bottom: 0.08rem; /* reduce visual bottom padding */
+    margin-bottom: 0; /* keep tight to following rows */
+}
+
+.stars {
+    margin-left: 0.45rem; /* nudge stars further right from label */
+}
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -339,7 +363,7 @@ h2 {
 }
 
 /* Specific spacing for the 'Log an Outfit' heading */
-main h2 { padding-top: 1.25rem }
+main h2 { padding-top: 1.25rem; padding-bottom: 0.6rem }
 
 h2 img {
     width: 2rem;
@@ -354,8 +378,9 @@ p {
     text-align: center;
     color: #666; /* match existing UI grey */
     font-size: 0.95rem; /* slightly smaller */
-    margin: 0.5rem auto 1rem auto;
+    margin: 0.35rem auto 0.8rem auto; /* pull closer to title */
     max-width: 760px;
+    padding-bottom: 0.6rem; /* extra bottom spacing */
 }
 
 nav {
@@ -414,11 +439,11 @@ button {
 }
 
 button.save {
-    background: rgb(3, 136, 3);
+    background: #b21e1e; /* red save button */
 }
 
 button.save:hover {
-    background-color: rgb(3, 103, 3);
+    background-color: #8f1a1a;
 }
 
 button.reset {
